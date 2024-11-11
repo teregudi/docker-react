@@ -1,0 +1,29 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      # Ha a Dockerfile-nak más a neve, itt tudsz szólni róla
+      dockerfile: Dockerfile.dev
+    # Összekapcsolja a localhost 3000-es portját a container 3000-es portjával  
+    ports:
+      - "3000:3000"
+    # Ez a trükk tesztelésnél hasznos
+    # Nem másolja át a projektfájlokat a containerbe, csak referenciát készít rájuk
+    # Tehát ha futtatod a containert, és közben localban módosítasz egy fájlt, az azonnal megjelenik a futó appban
+    # Az /app/node_modules sor csak azért kell, hogy a node_modules mappára ne csináljon referenciát
+    # (mert ideális esetben az localban nem is létezik, csak a containerben)
+    # Szóval így kéne működnie papíron, de nálam mégsem megy...
+    volumes:
+      - /app/node_modules
+      - .:/app
+  # Tesztelési célból létrehozhatunk egy különálló service-t a containerben    
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    # Itt csaphatjuk felül a Dockerfile-ban megadott indítási parancsot
+    command: ["npm", "run", "test"]
