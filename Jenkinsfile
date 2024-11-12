@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/teregudi/docker-react.git'
+                git branch: 'master', url: 'https://github.com/teregudi/docker-react.git'
             }
         }
         stage('Install Dependencies') {
